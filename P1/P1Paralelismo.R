@@ -1,6 +1,6 @@
 IniciaProceso = proc.time()
 repetir <- 10 #N. de veces a repetir por cada dimensión#
-duracion <- 500 #Cantidad de pasos o cambios en el vector pos por cada dimensión#
+duracion <- 50 #Cantidad de pasos o cambios en el vector pos por cada dimensión#
 #Biblioteca para poder facilitar la ejecución paralela en R#
 library(parallel)
 
@@ -11,7 +11,7 @@ clusterExport(cluster, "duracion")
 datos <-  data.frame()
 
 #Especificamos el número de dimensiones de trabajo# 
-for (dimension in 1:8) {
+for (dimension in 1:500) {
     clusterExport(cluster, "dimension")
     resultado <- parSapply(cluster, 1:repetir,
                            function(r) {
@@ -42,7 +42,5 @@ stopCluster(cluster)
     boxplot(data.matrix(datos), use.cols=FALSE, xlab="Dimensi\u{F3}n", ylab="N. veces vuelve al origen", main="Practica 1")
  
 graphics.off()
-#User time es el tiempo de la CPU dedicado a la ejecución del las instrucciones del proceso. System time es el tiempo de la CPU empleado por el sistema operativo (el núcleo o kernel) siguiendo las instrucciones del proceso (abrir ficheros, iniciar otros procesos o mirar al reloj del sistema, etc.). Elapsed time es el tiempo transcurrido 'real' desde que se inició el proceso.#
 FinalProceso=proc.time()-IniciaProceso
 print(FinalProceso)  
-datos
