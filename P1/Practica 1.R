@@ -11,7 +11,7 @@ clusterExport(cluster, "duracion")
 datos <-  data.frame()
 
 #Especificamos el número de dimensiones de trabajo# 
-for (dimension in 1:500) {
+for (dimension in 1:8) {
     clusterExport(cluster, "dimension")
     resultado <- parSapply(cluster, 1:repetir,
                            function(r) {
