@@ -7,16 +7,17 @@ library(parallel)
 cluster <- makeCluster(detectCores() - 1)
 clusterExport(cluster, "duracion")
 datos <-  data.frame()
- 
+
+#Especificamos el número de dimensiones de trabajo# 
 for (dimension in 1:8) {
     clusterExport(cluster, "dimension")
     resultado <- parSapply(cluster, 1:repetir,
                            function(r) {
-				#Se genera el vector posición#
+	#Se genera el vector posición#
 						pos=rep(0,dimension)
-				#Generamos un vector origen para poder hacer la comparación de las veces que vuelve al origen#
+      #Generamos un vector origen para poder hacer la comparación de las veces que vuelve al origen#
 						origen=rep(0,dimension)
-				#Iniacializamos una variable para llevar la cuenta de cuantas veces vuelve al origen						
+	#Iniacializamos una variable para llevar la cuenta de cuantas veces vuelve al origen						
 						contador=0 
 						for (t in 1:duracion) {
       					cambiar <- sample(1:dimension, 1)
@@ -25,7 +26,7 @@ for (dimension in 1:8) {
             				cambio <- -1
         					}
 						pos[cambiar]= pos[cambiar]+ cambio
-				#Modificamos esta parte del codigo para lograr realizar una comparación entre la posición actual y nuestro vector origen#		
+	#Modificamos esta parte del codigo para lograr realizar una comparación entre la posición actual y nuestro vector origen#		
 					if (all (pos==origen)){
 						contador=contador +1 
 						}
