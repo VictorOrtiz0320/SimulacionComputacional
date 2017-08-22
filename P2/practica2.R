@@ -2,7 +2,7 @@ IniciaProceso = proc.time()
 library(parallel)
 dim <- 10
 num <-  dim^2
-repetir=200
+repetir=100
 yi=matrix(rep(0),nrow=repetir,ncol = 9)
 
 paso <- function(p) {
