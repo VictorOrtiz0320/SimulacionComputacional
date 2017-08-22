@@ -2,7 +2,7 @@ IniciaProceso = proc.time()
 library(parallel)
 dim <- 10
 num <-  dim^2
-repetir=1
+repetir=200
 #Inicializar matriz donde se guardarán los resultados
 yi=matrix(rep(0),nrow=repetir,ncol = 9)
 
@@ -18,7 +18,7 @@ clusterExport(cluster, "dim")
 clusterExport(cluster, "paso") 
 
 # Ciclo que controla la probabilidad
-for (probabilidad in 2:2){
+for (probabilidad in 1:9){
   proba=probabilidad/10
 # Ciclo que controla las veces que se repetirá cada corrida por probabilidad  
   for (i in 1:repetir){
@@ -39,7 +39,11 @@ for (probabilidad in 2:2){
         	break;
     		}
   		actual <- matrix(siguiente, nrow=dim, ncol=dim, byrow=TRUE)
-  	
+  		salida = paste("p2_t", iteracion, ".png", sep="")
+  		tiempo = paste("Paso", iteracion)
+  		png(salida)
+  		plot.sociomatrix(actual, diaglab=FALSE, main=tiempo)
+  		graphics.off()
   	}
 
 
