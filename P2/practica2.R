@@ -3,6 +3,7 @@ library(parallel)
 dim <- 10
 num <-  dim^2
 repetir=200
+#Inicializar matriz donde se guardarán los resultados
 yi=matrix(rep(0),nrow=repetir,ncol = 9)
 
 paso <- function(p) {
@@ -16,17 +17,17 @@ cluster <- makeCluster(detectCores() - 1)
 clusterExport(cluster, "dim")
 clusterExport(cluster, "paso") 
 
-
+# Ciclo que controla la probabilidad
 for (probabilidad in 1:9){
   proba=probabilidad/10
-  
+# Ciclo que controla las veces que se repetirá cada corrida por probabilidad  
   for (i in 1:repetir){
   	
 	actual=matrix(sample(c(1:0),num, prob=c(proba,(1-proba)),replace=TRUE),nrow=dim, ncol=dim)
-  	#suppressMessages(library("sna"))
-  	#png("p2_t0.png")
-  	#plot.sociomatrix(actual, diaglab=FALSE, main="Inicio")
-  	#graphics.off()	
+  	suppressMessages(library("sna"))
+  	png("p2_t0.png")
+  	plot.sociomatrix(actual, diaglab=FALSE, main="Inicio")
+  	graphics.off()	
 
    	for (iteracion in 1:9) {
      
@@ -38,23 +39,24 @@ for (probabilidad in 1:9){
         	break;
     		}
   		actual <- matrix(siguiente, nrow=dim, ncol=dim, byrow=TRUE)
-  		#salida = paste("p2_t", iteracion, ".png", sep="")
-  		#tiempo = paste("Paso", iteracion)
-  		#png(salida)
-  		#plot.sociomatrix(actual, diaglab=FALSE, main=tiempo)
-  		#graphics.off()
+  		salida = paste("p2_t", iteracion, ".png", sep="")
+  		tiempo = paste("Paso", iteracion)
+  		png(salida)
+  		plot.sociomatrix(actual, diaglab=FALSE, main=tiempo)
+  		graphics.off()
   	}
 
 
-    #plot.sociomatrix(actual, diaglab=FALSE, main=tiempo)
+  #Llenado de la matriz de resultados
     yi[i,probabilidad]=iteracion
  
   } 
 }
 stopCluster(cluster)
 colnames(yi)=c(0.10,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.9)
+png("p2.png")
 boxplot(yi,xlab="Probabilidades",ylab="Número de pasos",main="Práctica 2")
-
+graphics.off()
 
 Tejecucion=proc.time()-IniciaProceso
 print(Tejecucion)  
