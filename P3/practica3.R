@@ -14,7 +14,7 @@ primo <- function(n) {
     return(TRUE)
 }
 
-#Hacer un vector de puro numeros primos y mandarlos directamente
+
 suppressMessages(library(doParallel))
 datos=data.frame()
 
@@ -22,6 +22,7 @@ desde <- 1000
 hasta <-  10000
 original <- desde:hasta
 invertido <- hasta:desde
+#Hacer un vector de puro numeros pares y mandarlos directamente
 pares = seq(desde+1, (desde + 1 + 2*(hasta-desde))/2,2)
 replicas <- 20
 MaxNucleos=detectCores()-1
