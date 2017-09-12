@@ -56,9 +56,9 @@ suppressMessages(library(doParallel))
 registerDoParallel(makeCluster(detectCores() - 1))
 resultados=data.frame()
 
-for (size in c(20, 40, 60, 80, 100, 120)) {
+for (size in c(20, 40, 60, 80, 100, 120)) { #for para controlar las dimensiones de la zona
   
-  for (k in c(10,50, 100)){
+  for (k in c(10,50, 100)){ #for para modificar la cantidad de semillas iniciales
   
     #Generar el paisaje y acomodar las semillas
     n <-  size
