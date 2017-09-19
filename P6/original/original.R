@@ -3,7 +3,7 @@ l <- 1.5
 n <- 100
 pi <- 0.05
 pr <- 0.02
-v <- l / 30
+v <- l / 60
 agentes <- data.frame(x = double(), y = double(), dx = double(), dy = double(), estado  = character())
 for (i in 1:n) {
   e <- "S"

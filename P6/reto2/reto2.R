@@ -7,16 +7,14 @@ v <- l / 60
 agentes <- data.frame(x = double(), y = double(), dx = double(), dy = double(), estado  = character())
 suppressMessages(library(doParallel))
 registerDoParallel(makeCluster(detectCores() - 1))
-epidemia <- integer()
-r <- 0.1
-tmax <- 100
-digitos <- floor(log(tmax, 10)) + 1
 resultados=data.frame()
-x=data.frame()
+x=c() 
+
 
 
 ##############################################################################################################
-for (pi in seq(0.05,0.1,0.01)){
+for (pi in c(0.05,0.1,0.5,0.8,1)){
+  agentes <- data.frame(x = double(), y = double(), dx = double(), dy = double(), estado  = character())
 for (i in 1:n) {
   e <- "S"
   if (runif(1) < pi) {
@@ -28,6 +26,10 @@ for (i in 1:n) {
   levels(agentes$estado) <- c("S", "I", "R")
 }
 
+r <- 0.1
+tmax <- 100
+digitos <- floor(log(tmax, 10)) + 1
+epidemia <- integer()
 contagiados<- function (j){
   contagios=rep(FALSE,n)
   for (i in 1:n) {
@@ -110,21 +112,23 @@ for (tiempo in 1:tmax) {
     points(aR$x, aR$y, pch=17, col="goldenrod", bg="goldenrod")
   }
   graphics.off()
-  #Guardar en un dataframe los datos de epidemia y graficar por separado con splitscreen
+ 
   
 }
-
-resultados=cbind(resultados,c(pi,epidemia))
-names(resultados)=c("Pinfectados","Epi")
-resultados$Pinfectados=as.factor(resultados$Pinfectados)
-
+png(paste("p6e",pi,".png",sep=""), width=600, height=300)
+plot(1:length(epidemia), 100 * epidemia / n, xlab="Tiempo", ylab="Porcentahe de infectados")
+graphics.off()
+#Guardar en un dataframe los datos de epidemia y graficar por separado con splitscreen
+resultados=cbind(pi,epidemia)
+x=rbind(x,resultados)
 
 }
-boxplot(data=resultados, Pinfectados~Epi, xlab="pi", ylab="epidemia")
+
+
+
 ########################################################################################################
-#png("p6e.png", width=600, height=300)
-#plot(1:length(epidemia), 100 * epidemia / n, xlab="Tiempo", ylab="Porcentahe de infectados")
-#graphics.off()
+
 Tfinal=Sys.time()
 print(Tfinal-Tinicial)
+boxplot(data=x, epidemia~pi, xlab="pi", ylab="epidemia")
 

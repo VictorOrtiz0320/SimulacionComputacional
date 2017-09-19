@@ -3,7 +3,7 @@ l <- 1.5
 n <- 100
 pi <- 0.05
 pr <- 0.02
-pv <- 0.08
+pv <- 0.02
 v <- l / 60
 
 agentes <- data.frame(x = double(), y = double(), dx = double(), dy = double(), estado  = character())
@@ -115,8 +115,8 @@ for (tiempo in 1:tmax) {
   }
   graphics.off()
 }
-png("p6e.png", width=600, height=300)
-plot(1:length(epidemia), 100 * epidemia / n, xlab="Tiempo", ylab="Porcentahe de infectados")
+png("p6e.png", width=600, height=300, pointsize = 17)
+plot(1:length(epidemia), 100 * epidemia / n, xlab="Tiempo", ylab="Porcentaje de infectados")
 graphics.off()
 Tfinal=Sys.time()
 print(Tfinal-Tinicial)

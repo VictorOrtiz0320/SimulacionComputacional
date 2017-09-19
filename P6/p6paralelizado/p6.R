@@ -30,9 +30,7 @@ registerDoParallel(makeCluster(detectCores() - 1))
 contagiados<- function (j){
   contagios=rep(FALSE,n)
   for (i in 1:n) {
-    #a1 <- agentes[i, ]
     if (agentes[i,5] == "I") { # desde los infectados
-     # for (j in 1:n) {
         if (!contagios[j]) { # aun sin contagio
           #a2 <- agentes[j, ]
           if (agentes[j,5] == "S") { # hacia los susceptibles
@@ -61,7 +59,6 @@ for (tiempo in 1:tmax) {
     }
     
     #paralelizar contagiados 
-   
     contagiios=foreach(j=1:n, .combine = c) %dopar% contagiados(j)
     stopImplicitCluster()
 
