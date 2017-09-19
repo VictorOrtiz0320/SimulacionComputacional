@@ -130,5 +130,7 @@ x=rbind(x,resultados)
 
 Tfinal=Sys.time()
 print(Tfinal-Tinicial)
-boxplot(data=x, epidemia~pi, xlab="pi", ylab="epidemia")
+png("boxplotPI.png",width = 800, height = 800,pointsize = 20)
+boxplot(data=x, epidemia~pi, xlab="pi", ylab="epidemia",col=c("Blue","Red","green","yellow","purple"))
+graphics.off()
 
