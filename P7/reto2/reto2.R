@@ -24,6 +24,7 @@ for (e in seq(0.991,0.999,0.002)){
   
   for (Temp in seq(100,1000,50)){ 
     re=cbind(Temp)
+    
     for (tiempo in 1:tmax) {
       resul=data.frame()
       resuldatos=data.frame()
