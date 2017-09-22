@@ -1,72 +1,67 @@
-library(lattice)
-library(reshape2) 
 f <- function(x) {
   return(cos(14.5*x - 0.3) + x * (x + 0.2) + 1.01)
 }
-maxpaso=data.frame()
-maxchido=data.frame()
-#resul=data.frame()
-#resuldatos=data.frame()
-#maxpaso=data.frame()
-#maxchido=data.frame()
-low <- -7.7
-high <- 7.8
+low <- -3
+high <- -low
+xg <- seq(low, high, 0.05)
+y <- f(xg)
 tmax <- 100
-x <- runif(1, low, high)
+digitos <- floor(log(tmax, 10)) + 1
 step <- 0.3
-#Temp=1000
+Temp=500
 e=0.995
 d=0
 
-for (e in seq(0.991,0.999,0.002)){
+x <- runif(1, low, high)
+best=x
+#############################################################################
+for (tiempo in 1:tmax) {
  
- 
-  
-  for (Temp in seq(100,1000,50)){ 
-    re=cbind(Temp)
-    
-    for (tiempo in 1:tmax) {
-      resul=data.frame()
-      resuldatos=data.frame()
-  
-      valor=runif(1)
-      prob=exp(-d/Temp)
-      delta <- runif(1, -step, step)
-      xp <- x + delta
-      d=f(xp)-f(x)
-      resul=cbind(x,xp,Temp)
-      
-    
-      if (d>0){
-        x=xp
-      }
-      else{
-        if  (valor<prob){
-        Temp=Temp*e
-        x=xp
-        }
-      }
-    
-    resul=cbind(resul,d,Temp,valor,prob,x,f(x))
-    resuldatos=rbind(resuldatos,resul)
-   
+  valor=runif(1)
+  prob=exp(-d/Temp)
+  delta <- runif(1, -step, step)
+  xp <- x + delta
+  d=f(xp)-f(x)
+  resul=cbind(x,xp,Temp)
   
   
-    
-    }
-    maxchido=cbind(e,re,Temp,max(resuldatos[9]))
-    maxpaso=rbind(maxpaso,maxchido)
-  
+  if (d>0){
+    x=xp
   }
- 
+  else{
+    if  (valor<prob){
+      Temp=Temp*e
+      x=xp
+    }
+  }
+  if (f(x)>f(best)){
+  best=x
+  }
+#############################################################################
+#for (tiempo in 1:tmax) {
+  #delta <- runif(1, 0, step)
+  #left <- curr - delta
+  #right <- curr + delta
+  #fl <- f(left)
+  #fr <- f(right)
+  #if (fl < fr) {
+   # curr <- left
+  #} else {
+   # curr <- right
+  #}
+  #if (f(curr) < f(best)) { # minimizamos
+    #best <- curr
+  #}
+  #############################################################################
+  tl <- paste(tiempo, "", sep="")
+  while (nchar(tl) < digitos) {
+    tl <- paste("0", tl, sep="")
+  }
+  salida <- paste("p7_t", tl, ".png", sep="")
+  tiempo <- paste("Paso", tiempo)
+  png(salida, width=500, height=400)
+  plot(xg, y, type="l")
+  abline(v = best, col="green", lwd=2)
+  points(x, f(x), pch=16, col="red")
+  graphics.off()
 }
-
-names(resuldatos)=c("xi","x prima","Ti","delta","T","N. Aleatorio","exp(-d/T)","xf","f(x)")
-names(maxpaso)=c("E","Ti","T","Vmax")
-maxpaso$E=as.factor(maxpaso$E)
-
-R1=maxpaso[maxpaso$E==0.997,]
-
-xyplot(data=maxpaso,Vmax~Ti ,type="o")
-xyplot(data=R1,Vmax~Ti ,type="o")
-
