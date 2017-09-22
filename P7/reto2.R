@@ -9,12 +9,15 @@ high <- 7.8
 tmax <- 100
 x <- runif(1, low, high)
 step <- 0.3
-t=1
+t=100
 e=0.995
+d=0
 
 for (tiempo in 1:tmax) {
+  valor=runif(1)
+  prob=exp(-d/t)
   delta <- runif(1, -step, step)
-  xp <- x + delta
+  xp = x + delta
   d=f(xp)-f(x)
   resul=cbind(x,xp)
   
@@ -24,14 +27,20 @@ for (tiempo in 1:tmax) {
   }
   else{
     
-    if  (runif(1)<exp(-d/t)){
+    if  (valor<prob){
      t=t*e
-     x=x
+     x=xp
   }
   }
   
   
-  resul=cbind(tiempo,resul,d,t,x,f(x))
+  resul=cbind(resul,d,t,valor,prob,x,f(x))
   resuldatos=rbind(resuldatos,resul)
   
 }
+
+
+names(resuldatos)=c("xi","x prima","delta","T","N. Aleatorio","exp(-d/t)","xf","f(x)")
+
+
+

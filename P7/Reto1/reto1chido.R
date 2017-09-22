@@ -30,10 +30,8 @@ best <- c(currx,curry)
 
 for (pasos in 1:t) {
   
-  #p2 <- xyplot(curry~ currx, pch = 4, col = "orange")
-  #super=paisaje + as.layer(p2)
   trellis.device(device="png", filename=paste("xyplot",pasos,".png"))
-   print( levelplot(z ~ x * y, data = d) + as.layer( xyplot(curry~ currx, pch = 16, col = "red")))
+   print( levelplot(z ~ x * y, data = d) + as.layer( xyplot(curry~ currx, pch = 16, col = "red"))+ as.layer( xyplot(best[1]~ best[2], pch = 15, col = "blue")))
    dev.off()
  
   graphics.off()
@@ -41,8 +39,8 @@ for (pasos in 1:t) {
   deltay <- runif(1, 0, step)
   left <- currx - deltax
   right <- currx + deltax
-  top <- curry + deltay
-  bot <- curry - deltay
+  top <- curry + deltax
+  bot <- curry - deltax
   
   if (f(left,curry) > f(right,curry)) {
     bestx <- c(left,curry)
