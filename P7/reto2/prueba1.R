@@ -9,8 +9,8 @@ maxchido=data.frame()
 #resuldatos=data.frame()
 #maxpaso=data.frame()
 #maxchido=data.frame()
-low <- -7.7
-high <- 7.8
+low <- -3
+high <- 3
 tmax <- 100
 x <- runif(1, low, high)
 step <- 0.3
@@ -18,23 +18,23 @@ step <- 0.3
 e=0.995
 d=0
 
-for (e in seq(0.991,0.999,0.002)){
+for (e in seq(0.995,0.999,0.002)){
  
- 
+    resuldatos=data.frame()
   
-  for (Temp in seq(100,1000,50)){ 
+  for (Temp in seq(1,100,10)){ 
     re=cbind(Temp)
     
     for (tiempo in 1:tmax) {
       resul=data.frame()
-      resuldatos=data.frame()
+     
   
       valor=runif(1)
       prob=exp(-d/Temp)
       delta <- runif(1, -step, step)
       xp <- x + delta
       d=f(xp)-f(x)
-      resul=cbind(x,xp,Temp)
+      resul=cbind(tiempo,x,xp,Temp)
       
     
       if (d>0){
@@ -56,17 +56,26 @@ for (e in seq(0.991,0.999,0.002)){
     }
     maxchido=cbind(e,re,Temp,max(resuldatos[9]))
     maxpaso=rbind(maxpaso,maxchido)
-  
+   
+
   }
- 
+  
 }
 
-names(resuldatos)=c("xi","x prima","Ti","delta","T","N. Aleatorio","exp(-d/T)","xf","f(x)")
+names(resuldatos)=c("pasos","xi","x prima","Ti","delta","T","N. Aleatorio","exp(-d/T)","xf","f(x)")
 names(maxpaso)=c("E","Ti","T","Vmax")
 maxpaso$E=as.factor(maxpaso$E)
 
-R1=maxpaso[maxpaso$E==0.997,]
 
-xyplot(data=maxpaso,Vmax~Ti ,type="o")
-xyplot(data=R1,Vmax~Ti ,type="o")
+#png("p7t.png",width = 500,height = 500)
+xyplot(data=maxpaso,Vmax~Ti |E ,groups = E,
+       panel=function(x,y,subscripts,groups){
+         panel.grid(h=-1,v=-1)
+         panel.xyplot(x,y)
+         panel.stripplot(x,y,
+                         groups = groups, subscripts = subscripts,pch=19,type="o")
+         #panel.abline(h=wolfram,col="Green",lwd=2)
+       })
+#graphics.off()
 
+#boxplot(data=maxpaso,Vmax~E)

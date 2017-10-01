@@ -19,7 +19,6 @@ graphics.off()
 low <- -2
 high <- 3
 step <- 0.25
-replicas <- 10
 best=c()
 t=50
 
@@ -30,8 +29,12 @@ best <- c(currx,curry)
 
 for (pasos in 1:t) {
   
+  Bfinal= xyplot(best[1]~ best[2], pch = 0, col = "black")
+  Actual= xyplot(currx~ curry, pch = 20, col = "red")
+  paisaje= levelplot(z ~ x * y, data = d,cuts = 100)
+  
   trellis.device(device="png", filename=paste("xyplot",pasos,".png"))
-   print( levelplot(z ~ x * y, data = d) + as.layer( xyplot(curry~ currx, pch = 16, col = "red"))+ as.layer( xyplot(best[1]~ best[2], pch = 15, col = "blue")))
+   print(paisaje +  as.layer(Bfinal)+as.layer(Actual))
    dev.off()
  
   graphics.off()
@@ -64,7 +67,9 @@ for (pasos in 1:t) {
   if (f(currx,curry) > f(best[1],best[2])) {
     best <- c(currx,curry)
   }
-  
-  
+
+
 }
+
+
 
