@@ -9,7 +9,11 @@ y <- f(xg)
 tmax <- 100
 digitos <- floor(log(tmax, 10)) + 1
 step <- 0.3
+<<<<<<< HEAD
+Temp=5
+=======
 Temp=1000
+>>>>>>> ad59aaf99791d9005d385f2229a13dfd2887f615
 e=0.995
 d=0
 
