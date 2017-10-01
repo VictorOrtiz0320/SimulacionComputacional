@@ -10,7 +10,7 @@ f <- function(x, y) {
 low <- -2
 high <- 3
 step <- 0.25
-replicas <- 3
+replicas <- 10
 best=c()
 t=50
 k=1
@@ -81,7 +81,7 @@ R5=caminatas[caminatas$Replicas==5,]
 png("p7.png")
 #xyplot(data=R1,f(x,y)~Paso,pch = 16, col = "red")
 #xyplot(data=R2,f(x,y)~Paso,pch = 12, col = "blue")
-plot(data=caminatas,f(x,y)~Paso,type="p")
+plot(data=caminatas,f(x,y)~Paso,type="o")
 #points(data=R1,R1$f(x,y), R1$Paso, pch=15, col="red")
 points(data=caminatas,f(x,y)~Paso,pch=20,col="blue")
 abline(h=wolfram,col="green",lwd=2)

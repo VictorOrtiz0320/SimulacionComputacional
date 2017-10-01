@@ -8,7 +8,7 @@ y <- f(xg)
 tmax <- 100
 digitos <- floor(log(tmax, 10)) + 1
 step <- 0.3
-Temp=500
+Temp=5
 e=0.995
 d=0
 
