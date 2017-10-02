@@ -1,5 +1,6 @@
+Tinicial=Sys.time()
 library(testit) # para pruebas, recuerda instalar antes de usar
-k <- 10000
+k <- 100000
 n <- 1000000
 originales <- rnorm(k)
 cumulos <- originales - min(originales) + 1
@@ -59,6 +60,7 @@ names(freq) <- c("tam", "num")
 freq$tam <- as.numeric(levels(freq$tam))[freq$tam]
 duracion <- 5
 digitos <- floor(log(duracion, 10)) + 1
+
 for (paso in 1:duracion) {
   assert(sum(cumulos) == n)
   cumulos <- integer()
@@ -108,9 +110,13 @@ for (paso in 1:duracion) {
     tl <- paste("0", tl, sep="")
   }
   png(paste("p8_ct", tl, ".png", sep=""), width=300, height=300)
-  tope <- 50 * ceiling(max(cumulos) / 50)
-  hist(cumulos, breaks=seq(0, tope, 50), 
+  #tope <- 50 * ceiling(max(cumulos) / 50)
+  hist(cumulos,
+       #, breaks=seq(0, tope, 50), 
        main=paste("Paso", paso, "con ambos fen\u{00f3}menos"), freq=FALSE,
-       ylim=c(0, 0.05), xlab="Tama\u{00f1}o", ylab="Frecuencia relativa")
+       ylim=c(0, 0.3), xlab="Tama\u{00f1}o", ylab="Frecuencia relativa")
   graphics.off()
 }
+Tfinal=Sys.time()
+TiempoO=Tfinal-Tinicial
+print(TiempoO)
