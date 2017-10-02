@@ -1,5 +1,11 @@
+<<<<<<< HEAD:P8/codigochido.R
 library (testit) # para pruebas, recuerda instalar antes de usar
 k <- 10000
+=======
+Tinicial=Sys.time()
+library(testit) # para pruebas, recuerda instalar antes de usar
+k <- 100000
+>>>>>>> ab508db544b9bf498bed863e55be593b81a06368:P8/p8original/p8original.R
 n <- 1000000
 originales <- rnorm(k)
 cumulos <- originales - min(originales) + 1
@@ -61,11 +67,17 @@ names(freq) <- c("tam", "num")
 freq$tam <- as.numeric(levels(freq$tam))[freq$tam]
 duracion <- 5
 digitos <- floor(log(duracion, 10)) + 1
+<<<<<<< HEAD:P8/codigochido.R
 ########################################################################################################################
 
 assert(sum(cumulos) == n)
 rompiendo<- function(i){  
   
+=======
+
+for (paso in 1:duracion) {
+  assert(sum(cumulos) == n)
+>>>>>>> ab508db544b9bf498bed863e55be593b81a06368:P8/p8original/p8original.R
   cumulos <- integer()
   urna <- freq[i,]
   if (urna$tam > 1) { # no tiene caso romper si no se puede
@@ -120,6 +132,7 @@ for (paso in 1:duracion) {
   while (nchar(tl) < digitos) {
     tl <- paste("0", tl, sep="")
   }
+<<<<<<< HEAD:P8/codigochido.R
  # png(paste("p8_ct", tl, ".png", sep=""), width=300, height=300)
   tope <- 50 * ceiling(max(cumulos) / 50)
   hist(cumulos, breaks=seq(0, tope, 50), 
@@ -128,3 +141,16 @@ for (paso in 1:duracion) {
   #graphics.off()
 }
 
+=======
+  png(paste("p8_ct", tl, ".png", sep=""), width=300, height=300)
+  #tope <- 50 * ceiling(max(cumulos) / 50)
+  hist(cumulos,
+       #, breaks=seq(0, tope, 50), 
+       main=paste("Paso", paso, "con ambos fen\u{00f3}menos"), freq=FALSE,
+       ylim=c(0, 0.3), xlab="Tama\u{00f1}o", ylab="Frecuencia relativa")
+  graphics.off()
+}
+Tfinal=Sys.time()
+TiempoO=Tfinal-Tinicial
+print(TiempoO)
+>>>>>>> ab508db544b9bf498bed863e55be593b81a06368:P8/p8original/p8original.R
