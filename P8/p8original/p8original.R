@@ -1,7 +1,7 @@
 Tinicial=Sys.time()
 library(testit) # para pruebas, recuerda instalar antes de usar
-k <- 100000
-n <- 1000000
+k <-100000
+n <-1000000
 originales <- rnorm(k)
 cumulos <- originales - min(originales) + 1
 cumulos <- round(n * cumulos / sum(cumulos))
@@ -114,7 +114,7 @@ for (paso in 1:duracion) {
   hist(cumulos,
        #, breaks=seq(0, tope, 50), 
        main=paste("Paso", paso, "con ambos fen\u{00f3}menos"), freq=FALSE,
-       ylim=c(0, 0.3), xlab="Tama\u{00f1}o", ylab="Frecuencia relativa")
+       ylim=c(0, 0.2), xlab="Tama\u{00f1}o", ylab="Frecuencia relativa")
   graphics.off()
 }
 Tfinal=Sys.time()

@@ -1,0 +1,46 @@
+	Welch Two Sample t-test
+
+data:  vecO and vecP
+t = 1.3856, df = 4.2682, p-value = 0.2339
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.08889374  0.27503012
+sample estimates:
+mean of x mean of y 
+1.0828669 0.9897987 
+
+
+	Welch Two Sample t-test
+
+data:  vecO and vecP
+t = 11.643, df = 4.4529, p-value = 0.0001676
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.2466089 0.3932709
+sample estimates:
+mean of x mean of y 
+  1.55036   1.23042 
+
+
+	Welch Two Sample t-test
+
+data:  vecO and vecP
+t = 5.0537, df = 4.8648, p-value = 0.004234
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.6396674 1.9869454
+sample estimates:
+mean of x mean of y 
+ 3.182507  1.869201 
+
+
+	Welch Two Sample t-test
+
+data:  vecO and vecP
+t = 20.34, df = 4.065, p-value = 3.043e-05
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 3.267425 4.292950
+sample estimates:
+mean of x mean of y 
+ 6.269311  2.489123 

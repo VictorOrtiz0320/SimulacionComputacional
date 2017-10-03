@@ -1,7 +1,7 @@
 Tinicial=Sys.time()
 library(testit) # para pruebas, recuerda instalar antes de usar
-k <- 100000
-n <- 1000000
+k <-100000
+n <-1000000
 originales <- rnorm(k)
 cumulos <- originales - min(originales) + 1
 cumulos <- round(n * cumulos / sum(cumulos))
@@ -22,7 +22,6 @@ if (diferencia > 0) {
 }
 assert(length(cumulos[cumulos == 0]) == 0) # que no haya vacios
 assert(sum(cumulos) == n)
-print(sum(cumulos))
 c <- median(cumulos) # tamanio critico de cumulos
 d <- sd(cumulos) / 4 # factor arbitrario para suavizar la curva
 
@@ -87,11 +86,11 @@ uniendo <- function(){
   cumulos <- c(cumulos, unirse(urna$tam, urna$num))
   return(cumulos)
 }
-
+#Función juntar
 uniendose<- function(){
-  #for (i in 1:floor(nt / 2) ) {
+  
   tcumulos <- juntarse[2*i-1] + juntarse[2*i]
-  #}
+
   return(tcumulos)
 }
 suppressMessages(library(doParallel))
@@ -148,13 +147,13 @@ for (paso in 1:duracion) {
   while (nchar(tl) < digitos) {
     tl <- paste("0", tl, sep="")
   }
-  #png(paste("p8p_ct", tl, ".png", sep=""), width=300, height=300)
+  png(paste("p8p_ct", tl, ".png", sep=""), width=300, height=300)
   #tope <- 50 * ceiling(max(cumulos) / 50)
   hist(cumulos, 
        #breaks=seq(0, tope, 50), 
        main=paste("Paso", paso, "con ambos fen\u{00f3}menos"), freq=FALSE,
-       ylim=c(0, 0.3), xlab="Tama\u{00f1}o", ylab="Frecuencia relativa")
-  #graphics.off()
+       ylim=c(0, 0.2), xlab="Tama\u{00f1}o", ylab="Frecuencia relativa")
+  graphics.off()
 
 
 }
