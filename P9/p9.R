@@ -1,5 +1,5 @@
 n <- 30
-p <- data.frame(x = rnorm(n), y=rnorm(n), c=rnorm(n), m=abs(rnorm(n)))
+p <- data.frame(x = rnorm(n), y=rnorm(n), c=rnorm(n), m=abs(rnorm(n,0.001,10000)))
 xmax <- max(p$x)
 xmin <- min(p$x)
 p$x <- (p$x - xmin) / (xmax - xmin) # ahora son de 0 a 1
@@ -8,8 +8,8 @@ ymin <- min(p$y)
 p$y <- (p$y - ymin) / (ymax - ymin) # las y tambien
 cmax <- max(p$c)
 cmin <- min(p$c)
-#mmax <- 5
-#mmin <- 10
+#mmax <- 100
+#mmin <- 50
 #p$m <- abs((p$m-mmin)/ (mmax-mmin))
 p$c <- 2 * (p$c - cmin) / (cmax - cmin) - 1 # cargas son entre -1 y 1
 p$g <- round(5 * p$c) # coloreamos segun la carga a 11 niveles de -5 a 5
@@ -22,6 +22,10 @@ xyplot(y ~ x, group=g, data=p, auto.key=list(space="right"),
        xlab="X", ylab="Y", main="Part\u{00ed}culas generadas",
        par.settings = list(superpose.symbol = list(pch = 15, cex = 1.5,
                                                    col = colores)))
+
+
+resul=data.frame()
+final=data.frame()
 graphics.off()
 eps <- 0.001
 fuerza <- function(i) {
@@ -31,17 +35,18 @@ fuerza <- function(i) {
   mi <- p[i,]$m
   fx <- 0
   fy <- 0
-  fm <- 0
   for (j in 1:n) {
     cj <- p[j,]$c
     dir <- (-1)^(1 + 1 * (ci * cj < 0))
-    dx <- xi - p[j,]$x
-    dy <- yi - p[j,]$y
     dm <- p[j,]$m
+    dx <- (xi - p[j,]$x)/mi
+    dy <- (yi - p[j,]$y)/mi
+  
     factor <- dir * abs(ci - cj) / (sqrt(dx^2 + dy^2) + eps)
-    factorm <- (mi*dm)/(sqrt(dx^2 + dy^2) + eps)
-    fx <- fx - dx * factor*factorm
-    fy <- fy - dy * factor*factorm
+    fx <- fx - dx*factor
+    fy <- fy - dy*factor
+  
+   
   }
   return(c(fx, fy))
 }
@@ -62,9 +67,11 @@ graphics.off()
 
 for (iter in 1:tmax) {
   f <- foreach(i = 1:n, .combine=c) %dopar% fuerza(i)
-  delta <- 0.002 / max(abs(f)) # que nadie desplace una paso muy largo
+  delta <- 0.02 / max(abs(f)) # que nadie desplace una paso muy largo
   p$x <- foreach(i = 1:n, .combine=c) %dopar% max(min(p[i,]$x + delta * f[c(TRUE, FALSE)][i], 1), 0)
   p$y <- foreach(i = 1:n, .combine=c) %dopar% max(min(p[i,]$y + delta * f[c(FALSE, TRUE)][i], 1), 0)
+ resul= cbind(p,f) 
+ final=rbind(final,resul)
   tl <- paste(iter, "", sep="")
   while (nchar(tl) < digitos) {
     tl <- paste("0", tl, sep="")
