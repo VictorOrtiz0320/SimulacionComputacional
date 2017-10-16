@@ -85,7 +85,7 @@ pesos <- generador.pesos(n, 15, 80)
 valores <- generador.valores(pesos, 10, 500)
 capacidad <- round(sum(pesos) * 0.65)
 optimo <- knapsack(capacidad, pesos, valores)
-#init <- 200
+init <- 200
 p <- poblacion.inicial(n, init)
 tam <- dim(p)[1]
 assert(tam == init)
@@ -142,11 +142,11 @@ for (iter in 1:tmax) {
   mejores <- c(mejores, mejor)
 }
 stopImplicitCluster() 
-png("p10.png", width=600, height=300)
+#png("p10.png", width=600, height=300)
 plot(1:tmax, mejores, xlab="Paso", ylab="Mayor valor", type='l', ylim=c(0.95*min(mejores), 1.05*optimo))
 points(1:tmax, mejores, pch=15)
 abline(h=optimo, col="green", lwd=3)
-graphics.off()
+#graphics.off()
 print(paste(mejor, (optimo - mejor) / optimo))
 Tfinal=Sys.time()
 Tiempo=Tfinal-Tinicial
