@@ -1,5 +1,5 @@
+Tinicial=Sys.time()
 library(testit)
-
 knapsack <- function(cap, peso, valor) {
   n <- length(peso)
   pt <- sum(peso) 
@@ -16,11 +16,11 @@ knapsack <- function(cap, peso, valor) {
       tabla[fila, 1] <- 0 
     }
     rownames(tabla) <- 0:cap 
-    colnames(tabla) <- c(0, valor)
+    colnames(tabla) <- c(0, valor) 
     for (objeto in 1:n) { 
-      for (acum in 1:(cap+1)) { 
-        anterior <- acum - peso[objeto] 
-        if (anterior > 0) { 
+      for (acum in 1:(cap+1)) { # consideramos cada fila de la tabla
+        anterior <- acum - peso[objeto]
+        if (anterior > 0) { # si conocemos una combinacion con ese peso
           tabla[acum, objeto + 1] <- max(tabla[acum, objeto], tabla[anterior, objeto] + valor[objeto])
         }
       }
@@ -82,51 +82,89 @@ reproduccion <- function(x, y, n) {
   yx <- c(y[1:pos], x[(pos+1):n])
   return(c(xy, yx))
 }
-
-n <- 20
+n <- 50
 pesos <- generador.pesos(n, 15, 80)
 valores <- generador.valores(pesos, 10, 500)
 capacidad <- round(sum(pesos) * 0.65)
 optimo <- knapsack(capacidad, pesos, valores)
-init <- 30
+init <- 200
 p <- poblacion.inicial(n, init)
 tam <- dim(p)[1]
 assert(tam == init)
 pm <- 0.05
-rep <- 10 #pares de cruces
-tmax <- 15 #Generaciones
+rep <- 50
+tmax <- 50
+mejores <- double()
+
+suppressMessages(library(doParallel))
+registerDoParallel(makeCluster(detectCores() - 1))
+
+
+#Paralelizar mutaciones
+mutar<-function(i){
+  p <- poblacion.inicial(n, init)
+  if (runif(1) < pm) {
+    p <- mutacion (p[i,], n)
+  }
+  return(as.data.frame(p))
+}
+
+#Paralelizar cruces
+cruces<-function(i){
+  padres <- sample(1:tam, 2, replace=FALSE)
+  hijos <- reproduccion(p[padres[1],], p[padres[2],], n)
+  h1 <-hijos[1:n] # primer hijo
+  h2 <-hijos[(n+1):(2*n)] # segundo hijo
+  hijo<- rbind(h1,h2)
+  return(hijo)
+}
+
+
+#Paralelizar factbilidad
+factibilidad <- function(i){
+  obj <- c(objetivo(p[i,], valores))
+  fact <- c(factible(p[i,], pesos, capacidad))
+  resul<-(cbind(obj,fact))
+  return(resul)
+}
+
 
 for (iter in 1:tmax) {
   p$obj <- NULL
   p$fact <- NULL
-  #Paralelizar mutaciones
-  for (i in 1:tam) { # cada objeto puede mutarse con probabilidad pm
-    if (runif(1) < pm) {
-      p <- rbind(p, mutacion(p[i,], n))
-    }
-  }
-  #Paralelizar Cruces
-  for (i in 1:rep) { # una cantidad fija de reproducciones
-    padres <- sample(1:tam, 2, replace=FALSE)
-    hijos <- reproduccion(p[padres[1],], p[padres[2],], n)
-    p <- rbind(p, hijos[1:n]) # primer hijo
-    p <- rbind(p, hijos[(n+1):(2*n)]) # segundo hijo
-  }
+  
+   #for (i in 1:tam) { # cada objeto puede mutarse con probabilidad pm
+    #if (runif(1) < pm) {
+     # p <- rbind(p, mutacion(p[i,], n))
+    #}
+  #}
+  library(plyr)
+   p<-rbind.fill(p, foreach(i=1:tam, .combine = cbind) %dopar% mutar(i)) #MUTAR
+
+  p<-rbind(p,foreach(i=1:rep, .combine=rbind) %dopar% cruces(i)) #CRUCES
   tam <- dim(p)[1]
   obj <- double()
   fact <- integer()
-  #Paralelizar si es factible o no 
-  for (i in 1:tam) {
-    obj <-  c(obj, objetivo(p[i,], valores))
-    fact <- c(fact, factible(p[i,], pesos, capacidad))
-  }
-  p <- cbind(p, obj)
-  p <- cbind(p, fact)
+  rownames(p)<-c(1:dim(p)[1])
+  p<-data.frame(sapply(p,function(x)as.numeric(as.character(x))))
+  
+  p<-cbind(p,foreach(i=1:tam, .combine=rbind) %dopar% factibilidad(i)) #FACTBILIDAD
+  
   mantener <- order(-p[, (n + 2)], -p[, (n + 1)])[1:init]
   p <- p[mantener,]
   tam <- dim(p)[1]
   assert(tam == init)
+  factibles <- p[p$fact == TRUE,]
+  mejor <- max(factibles$obj)
+  mejores <- c(mejores, mejor)
 }
-factibles <- p[p$fact == TRUE,]
-mejor <- max(factibles$obj)
+stopImplicitCluster() 
+png("p10.png", width=600, height=300)
+plot(1:tmax, mejores, xlab="Paso", ylab="Mayor valor", type='l', ylim=c(0.95*min(mejores), 1.05*optimo))
+points(1:tmax, mejores, pch=15)
+abline(h=optimo, col="green", lwd=3)
+graphics.off()
 print(paste(mejor, (optimo - mejor) / optimo))
+Tfinal=Sys.time()
+TiempoT=Tfinal-Tinicial
+print(TiempoT)

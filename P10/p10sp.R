@@ -58,7 +58,7 @@ generador.valores <- function(pesos, min, max) {
     desv <- runif(1)
     valores <- c(valores, rnorm(1, media, desv))
   }
-  valores <- normalizar(valores) * (max - min) + max
+  valores <- normalizar(valores) * (max - min) + min
   return(valores)
 }
 
@@ -95,7 +95,7 @@ tam <- dim(p)[1]
 assert(tam == init)
 pm <- 0.05
 rep <- 50
-tmax <- 50
+tmax <- 50  
 mejores <- double()
 for (iter in 1:tmax) {
   p$obj <- NULL
@@ -105,6 +105,7 @@ for (iter in 1:tmax) {
       p <- rbind(p, mutacion(p[i,], n))
     }
   }
+
   for (i in 1:rep) { # una cantidad fija de reproducciones
     padres <- sample(1:tam, 2, replace=FALSE)
     hijos <- reproduccion(p[padres[1],], p[padres[2],], n)
@@ -128,7 +129,7 @@ for (iter in 1:tmax) {
   mejor <- max(factibles$obj)
   mejores <- c(mejores, mejor)
 }
-png("p10.png", width=600, height=300)
+png("p10original.png", width=600, height=300)
 plot(1:tmax, mejores, xlab="Paso", ylab="Mayor valor", type='l', ylim=c(0.95*min(mejores), 1.05*optimo))
 points(1:tmax, mejores, pch=15)
 abline(h=optimo, col="green", lwd=3)
