@@ -32,11 +32,9 @@ knapsack <- function(cap, peso, valor) {
 factible <- function(seleccion, pesos, capacidad) {
   return(sum(seleccion * pesos) <= capacidad)
 }
-
 objetivo <- function(seleccion, valores) {
   return(sum(seleccion * valores))
 }
-
 normalizar <- function(data) {
   menor <- min(data)
   mayor <- max(data)
@@ -87,7 +85,7 @@ pesos <- generador.pesos(n, 15, 80)
 valores <- generador.valores(pesos, 10, 500)
 capacidad <- round(sum(pesos) * 0.65)
 optimo <- knapsack(capacidad, pesos, valores)
-init <- 200
+#init <- 200
 p <- poblacion.inicial(n, init)
 tam <- dim(p)[1]
 assert(tam == init)
@@ -99,16 +97,13 @@ mejores <- double()
 suppressMessages(library(doParallel))
 registerDoParallel(makeCluster(detectCores() - 1))
 
-
 #Paralelizar mutaciones
 mutar<-function(i){
-  p <- poblacion.inicial(n, init)
   if (runif(1) < pm) {
-    p <- mutacion (p[i,], n)
-  }
-  return(as.data.frame(p))
+    return( mutacion (unlist(p[i,]), n))
+  }#else
+  #return(p[i,])
 }
-
 #Paralelizar cruces
 cruces<-function(i){
   padres <- sample(1:tam, 2, replace=FALSE)
@@ -118,8 +113,6 @@ cruces<-function(i){
   hijo<- rbind(h1,h2)
   return(hijo)
 }
-
-
 #Paralelizar factbilidad
 factibilidad <- function(i){
   obj <- c(objetivo(p[i,], valores))
@@ -128,28 +121,18 @@ factibilidad <- function(i){
   return(resul)
 }
 
-
 for (iter in 1:tmax) {
   p$obj <- NULL
   p$fact <- NULL
   
-   #for (i in 1:tam) { # cada objeto puede mutarse con probabilidad pm
-    #if (runif(1) < pm) {
-     # p <- rbind(p, mutacion(p[i,], n))
-    #}
-  #}
-  library(plyr)
-   p<-rbind.fill(p, foreach(i=1:tam, .combine = cbind) %dopar% mutar(i)) #MUTAR
-
+  p<-rbind(p, foreach(i=1:tam, .combine = rbind) %dopar% mutar(i)) #MUTAR
   p<-rbind(p,foreach(i=1:rep, .combine=rbind) %dopar% cruces(i)) #CRUCES
   tam <- dim(p)[1]
   obj <- double()
   fact <- integer()
   rownames(p)<-c(1:dim(p)[1])
   p<-data.frame(sapply(p,function(x)as.numeric(as.character(x))))
-  
   p<-cbind(p,foreach(i=1:tam, .combine=rbind) %dopar% factibilidad(i)) #FACTBILIDAD
-  
   mantener <- order(-p[, (n + 2)], -p[, (n + 1)])[1:init]
   p <- p[mantener,]
   tam <- dim(p)[1]
@@ -166,5 +149,5 @@ abline(h=optimo, col="green", lwd=3)
 graphics.off()
 print(paste(mejor, (optimo - mejor) / optimo))
 Tfinal=Sys.time()
-TiempoT=Tfinal-Tinicial
-print(TiempoT)
+Tiempo=Tfinal-Tinicial
+print(Tiempo)
