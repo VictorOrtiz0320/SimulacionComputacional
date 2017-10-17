@@ -107,7 +107,7 @@ cruces<-function(i){
   hijo<- rbind(h1,h2)
   return(hijo)
 }
-#Paralelizar cruces
+#Paralelizar cruces ruleta
 crucesruleta<-function(i){
   padres <- sample(1:tam, 2, prob=bestpadres, replace=FALSE)
   hijos <- reproduccion(p[padres[1],], p[padres[2],], n)
