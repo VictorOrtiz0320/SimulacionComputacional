@@ -71,7 +71,7 @@ stopImplicitCluster()
 names(caminatas)=c("Replicas","Paso","x","y","f(x,y)")
 caminatas$Replicas=as.factor(caminatas$Replicas)
 
-<<<<<<< HEAD
+
 png("p7.png")
 #xyplot(data=R1,f(x,y)~Paso,pch = 16, col = "red")
 #xyplot(data=R2,f(x,y)~Paso,pch = 12, col = "blue")
@@ -79,7 +79,7 @@ plot(data=caminatas,f(x,y)~Paso,type="o")
 #points(data=R1,R1$f(x,y), R1$Paso, pch=15, col="red")
 points(data=caminatas,f(x,y)~Paso,pch=20,col="blue")
 abline(h=wolfram,col="green",lwd=2)
-=======
+
 
 
 #Graficar
@@ -93,7 +93,7 @@ xyplot(data=caminatas,f(x,y)~Paso,groups = Replicas,
                          groups = groups, subscripts = subscripts,pch=19,type="o")
          panel.abline(h=wolfram,col="Green",lwd=2)
        })
->>>>>>> ad59aaf99791d9005d385f2229a13dfd2887f615
+
 graphics.off()
 
 

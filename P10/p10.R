@@ -85,7 +85,7 @@ pesos <- generador.pesos(n, 15, 80)
 valores <- generador.valores(pesos, 10, 500)
 capacidad <- round(sum(pesos) * 0.65)
 optimo <- knapsack(capacidad, pesos, valores)
-init <- 200
+#init <- 200
 p <- poblacion.inicial(n, init)
 tam <- dim(p)[1]
 assert(tam == init)
@@ -101,12 +101,11 @@ registerDoParallel(makeCluster(detectCores() - 1))
 mutar<-function(i){
   if (runif(1) < pm) {
     return( mutacion (unlist(p[i,]), n))
-  }#else
-  #return(p[i,])
+  }
 }
 #Paralelizar cruces
 cruces<-function(i){
-  padres <- sample(1:tam, 2, replace=FALSE)
+  padres <- sample(1:tam, 2,replace=FALSE)
   hijos <- reproduccion(p[padres[1],], p[padres[2],], n)
   h1 <-hijos[1:n] # primer hijo
   h2 <-hijos[(n+1):(2*n)] # segundo hijo
@@ -126,6 +125,7 @@ for (iter in 1:tmax) {
   p$fact <- NULL
   
   p<-rbind(p, foreach(i=1:tam, .combine = rbind) %dopar% mutar(i)) #MUTAR
+  
   p<-rbind(p,foreach(i=1:rep, .combine=rbind) %dopar% cruces(i)) #CRUCES
   tam <- dim(p)[1]
   obj <- double()

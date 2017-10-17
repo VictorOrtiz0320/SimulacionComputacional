@@ -2,8 +2,8 @@ Resultados=data.frame()
 Toriginal=numeric()
 Tparalelo=numeric()
 
-for (init in c(10,20,30)){
-  for (r in 1:3){
+for (init in c(2,5,10)){
+  for (r in 1:2){
   
     source('~/GitHub/SimulacionComputacional/P10/p10sp.R')
     Toriginal=cbind(init,"o",Tiempo)
