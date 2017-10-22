@@ -104,14 +104,14 @@ dominadores <-foreach(i=1:n, .combine = rbind) %dopar% Fpareto(i)
      #main="Ejemplo bidimensional")
 #points(frente[,1], frente[,2], col="green", pch=16, cex=1.5)
 #graphics.off()
-library(ggplot2) # recordar instalar si hace falta
-data <- data.frame(pos=rep(0, n), dom=dominadores)
+#library(ggplot2) # recordar instalar si hace falta
+#data <- data.frame(pos=rep(0, n), dom=dominadores)
 #png("p11_violin.png")
-gr <- ggplot(data, aes(x=pos, y=dom)) + geom_violin(fill="orange", color="red")
-gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
-  xlab("") +
-  ylab("Frecuencia") +
-  ggtitle("Cantidad de soluciones dominantes")
+#gr <- ggplot(data, aes(x=pos, y=dom)) + geom_violin(fill="orange", color="red")
+#gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
+ # xlab("") +
+  #ylab("Frecuencia") +
+  #ggtitle("Cantidad de soluciones dominantes")
 #graphics.off()
 Tfinal=Sys.time()
 Tiempo=Tfinal-Tinicial

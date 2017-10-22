@@ -24,8 +24,8 @@ Resultados$Tiempo<-as.numeric(levels(Resultados$Tiempo))[Resultados$Tiempo]
 Resultados$tipo=as.factor(Resultados$tipo)
 #Resultados[Resultados$Tiempo>10,3]<-Resultados[Resultados$Tiempo>10,3]/60
 png("P11T.png",width=800, height=1000,pointsize = 15)
-boxplot(Tiempo~tipo*nSoluciones,data=Resultados,col = "lightgray",border=c("Green","Blue"),xlab="Número de soluciones ",ylab="Tiempo (min)")
-legend("topright", inset=.02,
+boxplot(Tiempo~tipo*nSoluciones,data=Resultados,col = "lightgray",border=c("Green","Blue"),xlab="Número de soluciones ",ylab="Tiempo (s)")
+legend("topleft", inset=.02,
        c("Original","Paralelizado"), fill=c("Green","Blue"), horiz=TRUE, cex=0.8,box.lty = 0)
 
 graphics.off()

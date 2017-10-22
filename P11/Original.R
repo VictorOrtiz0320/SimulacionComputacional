@@ -100,7 +100,7 @@ gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
   xlab("") +
   ylab("Frecuencia") +
   ggtitle("Cantidad de soluciones dominantes")
-#graphics.off()
+graphics.off()
 Tfinal=Sys.time()
 Tiempo=Tfinal-Tinicial
 print(Tiempo)
