@@ -6,7 +6,7 @@ Toriginal=numeric()
 Final<- data.frame()
 Resul<- data.frame()
 for (n in c(200)){
-  for (k in seq(2,10,2)){
+  for (k in seq(2,8,1)){
     
       
       source('~/GitHub/SimulacionComputacional/P11/P11.R', encoding = 'UTF-8')
@@ -18,11 +18,11 @@ stopImplicitCluster()
 
 names(Resultados)=c("Dominadores","nObjetivos","nSoluciones")
 Resultados$nObjetivos<- as.factor(Resultados$nObjetivos)
-
- ggplot(data=Resultados, aes(Resultados$nObjetivos, Resultados$Dominadores)) +
-  geom_violin(scale="width",fill="orange", color="red")+
-   geom_boxplot(width=0.2, fill="blue", color="white", lwd=2)+ 
+library(ggplot2)
+ ggplot(data=Resultados, aes(Resultados$nObjetivos, Resultados$Dominadores/n)) +
+  geom_violin(scale="width",fill="dodgerblue4", color="black")+
+   geom_boxplot(width=0.2, fill="dodgerblue2", color="aliceblue", lwd=2)+ 
  xlab("Número de funciones objetivo k") +
- ylab("Frecuencia")+ 
- ggtitle("Cantidad de soluciones dominantes")
+ ylab("Porcentaje de funciones dominantes")
+ #ggtitle("Cantidad de soluciones dominantes")
 ggsave(file=paste("p11_violin.png", sep='')) #Nombre del jpeg
