@@ -37,18 +37,18 @@ domin.by <- function(target, challenger, total) {
 vc <- 4
 md <- 3
 tc <- 5
-#k <- 10 # cuantas funciones objetivo
+k <- 2 # cuantas funciones objetivo
 
 Fobjetivo<- function(i){ 
   obj <- list()
 #for (i in 1:k) {
-  obj[[i]] <- poli(vc, md, tc)
+return(  obj[[i]] <- poli(vc, md, tc))
 #}
 }
 obj<-foreach(i=1:k) %dopar% Fobjetivo(i)
 minim <- (runif(k) > 0.5)
 sign <- (1 + -2 * minim)
-#n <- 1000 # cuantas soluciones aleatorias
+n <- 100 # cuantas soluciones aleatorias
 
 
 Fsoluciones<- function(i){
