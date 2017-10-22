@@ -6,24 +6,23 @@ Toriginal=numeric()
 Final<- data.frame()
 Resul<- data.frame()
 for (n in c(200)){
-  for (k in seq(2,12,2)){
+  for (k in seq(2,10,2)){
     
       
       source('~/GitHub/SimulacionComputacional/P11/P11.R', encoding = 'UTF-8')
-      Toriginal=cbind(k,n)
+      Toriginal=cbind(dominadores,k,n)
       Resultados=rbind(Resultados,Toriginal)
-     
-       data <- data.frame(pos=rep(0, n), dom=dominadores)
-       Resul<-cbind(Resul,Resultados, data)
-      gr <- ggplot(data, aes(x=pos, y=dom)) + geom_violin(fill="orange", color="red")
-      gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
-        xlab("") +
-        ylab("Frecuencia") +
-        ggtitle("Cantidad de soluciones dominantes")
-      ggsave(file=paste("p11_violin", k,".png", sep='')) #Nombre del jpeg
-            
   }
 }
 stopImplicitCluster() 
-#Final<-rbind(Final,data,Resultados)
-#names(Resultados)=c("nObjetivos","nSoluciones")
+
+names(Resultados)=c("Dominadores","nObjetivos","nSoluciones")
+Resultados$nObjetivos<- as.factor(Resultados$nObjetivos)
+
+ ggplot(data=Resultados, aes(Resultados$nObjetivos, Resultados$Dominadores)) +
+  geom_violin(scale="width",fill="orange", color="red")+
+   geom_boxplot(width=0.2, fill="blue", color="white", lwd=2)+ 
+ xlab("Número de funciones objetivo k") +
+ ylab("Frecuencia")+ 
+ ggtitle("Cantidad de soluciones dominantes")
+ggsave(file=paste("p11_violin.png", sep='')) #Nombre del jpeg

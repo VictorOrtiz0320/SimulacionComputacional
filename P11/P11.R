@@ -37,18 +37,18 @@ domin.by <- function(target, challenger, total) {
 vc <- 4
 md <- 3
 tc <- 5
-k <- 2 # cuantas funciones objetivo
+#k <- 2 # cuantas funciones objetivo
 
 Fobjetivo<- function(i){ 
   obj <- list()
 #for (i in 1:k) {
-return(  obj[[i]] <- poli(vc, md, tc))
+return(  obj[[i]] <- poli(md,vc, tc))
 #}
 }
 obj<-foreach(i=1:k) %dopar% Fobjetivo(i)
 minim <- (runif(k) > 0.5)
 sign <- (1 + -2 * minim)
-n <- 100 # cuantas soluciones aleatorias
+#n <- 100 # cuantas soluciones aleatorias
 
 
 Fsoluciones<- function(i){
@@ -56,9 +56,9 @@ sol <- matrix(runif(vc * n), nrow=n, ncol=vc)
 val <- matrix(rep(NA, k * n), nrow=n, ncol=k)
 #for (i in 1:n) { # evaluamos las soluciones
   for (j in 1:k) { # para todos los objetivos
-  }
+  #}
   return (eval(obj[[j]], sol[i,], tc))
-#}
+ }
 }
 val<-matrix(foreach(i=1:n, .combine = rbind) %dopar% Fsoluciones(i),nrow = n,ncol = k,byrow = TRUE)
 
@@ -104,14 +104,16 @@ dominadores <-foreach(i=1:n, .combine = rbind) %dopar% Fpareto(i)
      #main="Ejemplo bidimensional")
 #points(frente[,1], frente[,2], col="green", pch=16, cex=1.5)
 #graphics.off()
+
+#VIOLINPLOT
 #library(ggplot2) # recordar instalar si hace falta
-#data <- data.frame(pos=rep(0, n), dom=dominadores)
+data <- data.frame(pos=rep(0, n), dom=dominadores)
 #png("p11_violin.png")
-#gr <- ggplot(data, aes(x=pos, y=dom)) + geom_violin(fill="orange", color="red")
-#gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
- # xlab("") +
-  #ylab("Frecuencia") +
-  #ggtitle("Cantidad de soluciones dominantes")
+gr <- ggplot(data, aes(x=pos, y=dom)) + geom_violin(fill="orange", color="red")
+gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
+  xlab("") +
+  ylab("Frecuencia") +
+  ggtitle("Cantidad de soluciones dominantes")
 #graphics.off()
 Tfinal=Sys.time()
 Tiempo=Tfinal-Tinicial
