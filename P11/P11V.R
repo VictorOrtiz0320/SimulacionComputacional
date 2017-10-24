@@ -1,22 +1,26 @@
 suppressMessages(library(doParallel))
 registerDoParallel(makeCluster(detectCores() - 1))
-library(ggplot2) # recordar instalar si hace falta
+library(ggplot2)
+Resultados=data.frame()
+Toriginal=numeric()
+n=200
 
-for (n in c(200)){
-  for (k in seq(2,12,2)){
-    
+  for (k in seq(2,10,2)){
+    for (r in 1:50){
       
       source('~/GitHub/SimulacionComputacional/P11/P11.R', encoding = 'UTF-8')
-    
-      data <- data.frame(pos=rep(0, n), dom=dominadores)
-   
-      gr <- ggplot(data, aes(x=pos, y=dom)) + geom_violin(fill="orange", color="red")
-      gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
-        xlab("") +
-        ylab("Frecuencia") +
-        ggtitle("Cantidad de soluciones dominantes")
-      ggsave(file=paste("p11_violin", k,".png", sep='')) #Nombre del jpeg
-            
+      Toriginal=cbind(tam,k,r)
+      Resultados=rbind(Resultados,Toriginal)
   }
 }
 stopImplicitCluster() 
+names(Resultados)=c("Frente","nObjetivos","Replicas")
+Resultados$nObjetivos<- as.factor(Resultados$nObjetivos)
+library(ggplot2)
+ ggplot(data=Resultados, aes(Resultados$nObjetivos, (Resultados$Frente/n)*100)) +
+  geom_violin(scale="width",fill="dodgerblue4", color="black")+
+   geom_boxplot(width=0.2, fill="dodgerblue2", color="aliceblue")+ 
+ xlab("Número de funciones objetivo k") +
+ ylab("Porcentaje de funciones no dominadas (%)")+
+   theme_grey()
+ggsave(file=paste("p11_violin.png", sep='')) #Nombre del jpeg
