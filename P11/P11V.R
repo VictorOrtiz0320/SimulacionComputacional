@@ -21,6 +21,6 @@ library(ggplot2)
   geom_violin(scale="width",fill="dodgerblue4", color="black")+
    geom_boxplot(width=0.2, fill="dodgerblue2", color="aliceblue")+ 
  xlab("Número de funciones objetivo k") +
- ylab("Porcentaje de funciones no dominantes (%)")+
+ ylab("Porcentaje de funciones no dominadas (%)")+
    theme_grey()
 ggsave(file=paste("p11_violin.png", sep='')) #Nombre del jpeg
