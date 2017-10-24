@@ -37,14 +37,14 @@ domin.by <- function(target, challenger, total) {
 vc <- 4
 md <- 3
 tc <- 5
-#k <- 10 # cuantas funciones objetivo
+#k <- 2 # cuantas funciones objetivo
 obj <- list()
 for (i in 1:k) {
   obj[[i]] <- poli(vc, md, tc)
 }
 minim <- (runif(k) > 0.5)
 sign <- (1 + -2 * minim)
-#n <- 1000 # cuantas soluciones aleatorias
+#n <- 200 # cuantas soluciones aleatorias
 sol <- matrix(runif(vc * n), nrow=n, ncol=vc)
 val <- matrix(rep(NA, k * n), nrow=n, ncol=k)
 
@@ -82,6 +82,8 @@ for (i in 1:n) {
   no.dom <- c(no.dom, cuantos == 0) # nadie le domina
 }
  frente<- subset(val, no.dom) # solamente las no dominadas
+ frente <- subset(val, no.dom)
+ tam<-dim(frente)[1]
 
 #############################################################################################
 
@@ -100,7 +102,7 @@ gr + geom_boxplot(width=0.2, fill="blue", color="white", lwd=2) +
   xlab("") +
   ylab("Frecuencia") +
   ggtitle("Cantidad de soluciones dominantes")
-graphics.off()
+#graphics.off()
 Tfinal=Sys.time()
 Tiempo=Tfinal-Tinicial
 print(Tiempo)
