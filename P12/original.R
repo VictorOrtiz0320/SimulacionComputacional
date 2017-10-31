@@ -16,11 +16,12 @@ decimal <- function(bits, l) {
   }
   return(valor)
 }
-
 modelos <- read.csv("digitos.modelo", sep=" ", header=FALSE, stringsAsFactors=F)
-modelos[modelos=='n'] <- 0.995
-modelos[modelos=='g'] <- 0.92
-modelos[modelos=='b'] <- 0.002
+    
+    modelos[modelos=='n']<- 0.995
+    modelos[modelos=='g']<-0.92
+    modelos[modelos=='b']<-0.002
+
 
 r <- 5
 c <- 3
@@ -74,8 +75,8 @@ for (t in 1:a) { # prueba
   }
 }
 AciertosP<-round((sum(aciertos)/a)*100,2)
-print(paste("Porcentaje de Aciertos O",AciertosP,"%"))
 #print(contadores)
+print(paste("Porcentaje de Aciertos O",AciertosP,"%"))
 Tfinal=Sys.time()
 Tiempo=Tfinal-Tinicial
 print(Tiempo)

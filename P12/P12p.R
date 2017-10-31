@@ -1,3 +1,5 @@
+#suppressMessages(library(doParallel))
+#registerDoParallel(makeCluster(detectCores() - 1))
 Tinicial=Sys.time()
 binario <- function(d, l) {
   b <-  rep(FALSE, l)
@@ -18,9 +20,9 @@ decimal <- function(bits, l) {
 }
 
 modelos <- read.csv("digitos.modelo", sep=" ", header=FALSE, stringsAsFactors=F)
-modelos[modelos=='n'] <- 0.995
-modelos[modelos=='g'] <- 0.92
-modelos[modelos=='b'] <- 0.002
+  modelos[modelos=='n'] <- 0.995
+  modelos[modelos=='g']<- 0.92
+  modelos[modelos=='b']<- 0.002
 
 r <- 5
 c <- 3
@@ -32,9 +34,6 @@ tranqui <- 0.99
 tope <- 9
 digitos <- 0:tope
 k <- length(digitos)
-#contadores <- matrix(rep(0, k*(k+1)), nrow=k, ncol=(k+1))
-#rownames(contadores) <- 0:tope
-#colnames(contadores) <- c(0:tope, NA)
 
 n <- floor(log(k-1, 2)) + 1
 neuronas <- matrix(runif(n * dim), nrow=n, ncol=dim) # perceptrones
@@ -55,7 +54,6 @@ for (t in 1:5000) { # entrenamiento
   }
 }
 prueba<-function(){
-#for (t in 1:300) { # prueba
   d <- sample(0:tope, 1)
   pixeles <- runif(dim) < modelos[d + 1,] # fila 1 contiene el cero, etc.
   correcto <- binario(d, n)
@@ -70,13 +68,12 @@ prueba<-function(){
   if (r==d){
      return(TRUE)
    }
-  #contadores[d+1, r+1] <- contadores[d+1, r+1] + 1
 }
 #a=300
 aciertos<-foreach(t=1:a, .combine = c) %dopar% prueba()
+#stopImplicitCluster()
 AciertosP<-round((sum(aciertos)/a)*100,2)
 print(paste("Porcentaje de Aciertos P",AciertosP,"%"))
-#print(contadores)
 Tfinal=Sys.time()
 Tiempo=Tfinal-Tinicial
 print(Tiempo)

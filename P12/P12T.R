@@ -4,8 +4,8 @@ Resultados=data.frame()
 Toriginal=numeric()
 Tparalelo=numeric()
 
-  for (a in seq(500,2000,500)){
-    for(r in 1:20){
+  for (a in seq(1000,10000,1000)){
+    for(r in 1:10){
     
     source('~/GitHub/SimulacionComputacional/P12/original.R')
     Toriginal=cbind(a,r,"o",Tiempo,AciertosP)
@@ -32,6 +32,9 @@ graphics.off()
 #Porcentajes
 png("P12P.png",width=800, height=1000,pointsize = 15)
 boxplot(Paciertos~tipo*nPrueba,data=Resultados,col = c("chartreuse","dodgerblue"),border=c("chartreuse4","dodgerblue4"),xlab="Número de pruebas",ylab="Porcentaje de acierto (%)")
+legend("topright", inset=.02,
+       c("Original","Paralelizado"), fill=c("chartreuse","dodgerblue"), horiz=TRUE, cex=0.8,box.lty = 0)
+
 graphics.off()
 
 Psecuencial<-Resultados[Resultados$tipo=="o",]
