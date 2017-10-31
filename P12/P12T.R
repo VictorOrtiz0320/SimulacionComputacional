@@ -4,7 +4,7 @@ Resultados=data.frame()
 Toriginal=numeric()
 Tparalelo=numeric()
 
-  for (a in seq(1000,10000,1000)){
+  for (a in seq(500,2000,500)){
     for(r in 1:10){
     
     source('~/GitHub/SimulacionComputacional/P12/original.R')
@@ -37,10 +37,18 @@ legend("topright", inset=.02,
 
 graphics.off()
 
-Psecuencial<-Resultados[Resultados$tipo=="o",]
-Pparalelo<-Resultados[Resultados$tipo=="p",]
-#hist(Psecuencial$Paciertos)
-#hist(Pparalelo$Paciertos)
-#plot(density(Psecuencial$Paciertos))
-#plot(density(Pparalelo$Paciertos))
+#Psecuencial<-Resultados[Resultados$tipo=="o",]
+#Pparalelo<-Resultados[Resultados$tipo=="p",]
+
+
+for (a in seq(500,2000,500)){
+  PruebaTO<-Resultados[Resultados$nPrueba == a & Resultados$tipo=="p",] 
+  PruebaTP<-Resultados[Resultados$nPrueba == a & Resultados$tipo=="o",]
+  
+  vecO<-PruebaTP$Tiempo
+  vecP<-PruebaTO$Tiempo
+  student<-t.test(vecO,vecP)
+  print(student)
+
+}
 save.image(file = "Practica11chido.RData")
