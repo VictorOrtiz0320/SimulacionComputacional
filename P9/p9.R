@@ -104,10 +104,10 @@ ggsave(paste("Graifco1.png"))
 regresion<-lm(data=p, p$v~log(p$m))
 summary(regresion)
 
-library(magick)
-frames=lapply(1:tmax,function(x) image_read(paste("P9_p_",x,".png")))
-animation <- image_animate(image_join(frames), fps=100)
-image_write(animation, paste("P9_R1", ".gif"))
+#library(magick)
+#frames=lapply(1:tmax,function(x) image_read(paste("P9_p_",x,".png")))
+#animation <- image_animate(image_join(frames), fps=100)
+#image_write(animation, paste("P9_R1", ".gif"))
 
 #system("convert -delay 50 -size 300x300 p9_t*.png -loop 0 p9.gif") # creamos animacion con ImageMagick
 #Si la distancia euclideana es mejo	r a la media de los radios se van a sobreponer

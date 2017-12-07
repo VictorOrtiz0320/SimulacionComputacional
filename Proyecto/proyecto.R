@@ -2,14 +2,14 @@ library(ggplot2)
 #Declaración del dataframe con las partículas iniciales
 l<-1.5
 velocidad<-l/60
-n <- 30 #Número de particulas 
-particulas<- data.frame(x = double(), y = double(), dx = double(), dy = double(), espesor=double())
+n <- 20 #Número de particulas 
+particulas<- data.frame(x = double(), y = double(), dx = double(), dy = double(), espesor=double(), estado=character(), lider=numeric())
 for(i in 1:n){
-particulas <-rbind(particulas, data.frame(x = runif(1, 0, l), y=runif(1, 0, l), c =-5, r=5, dx=runif(1,-velocidad,velocidad), dy=runif(1,-velocidad,velocidad), espesor=runif(1,0.01,1)))
+particulas <-rbind(particulas, data.frame(x = runif(1, 0, l), y=runif(1, 0, l), c =-5, r=5, dx=runif(1,-velocidad,velocidad), dy=runif(1,-velocidad,velocidad), espesor=runif(1,0.01,1),estado="S",lider=0))
 }
-
+levels(particulas$estado) <- c(levels(particulas$estado), "A")
 particulas$rf<-particulas$r+particulas$espesor
-
+matriz<-matrix(double(),nrow=n,ncol=n)
 #Movimiento Browniano
 tmax<-50
 for (tiempo in 1:tmax){
@@ -33,7 +33,43 @@ for (tiempo in 1:tmax){
     }
     particulas[i,]<-p
   }
+  
+umbral<-0.06
 
+
+#Calcular distancia euclidiana
+
+ for (i in 1:n){
+   p1<- particulas[i,]
+   if (p1$estado == "S"){
+     for (j in 1:n){
+       p2<-particulas[j,]
+       dx<-p1$x-p2$x
+       dy<-p1$y-p2$y
+       if(i!=j){
+         matriz[i,j]<-sqrt(dx^2+dy^2)
+         d<-matriz[i,j]
+         if (d<umbral)
+         {
+           particulas[j,]$estado<-"A"
+           particulas[i,]$estado<-"A"
+           particulas[i,]$dx<-particulas[j,]$dx
+           particulas[i,]$dy<-particulas[j,]$dy
+         }
+       }
+     }
+   }   
+ }
+#Determinar la densidad de la doble capa
+
+#FuerzaAtracción->function(){}#Calcular fuerzas de atracción de van der waals 
+#Función inversa de la distancia pero elevada a un exponente mayor de dos
+
+#FuerzaRepulsión->function(){}#Calcular fuerzas de repulsión electrostatica
+#Fuerza de repulsión es inversamente proporcional al cuadrado de la distancia 
+
+
+#Establecer una distancia de umbral de interacción
 
   
 #Graficar la simulación

@@ -1,0 +1,5 @@
+Determinar la densidad de la doble capa
+Establecer una distancia de umbral de interacción
+Calcular fuerzas de atracción de van der waals 
+Calcular fuerzas de repulsión electrostatica
+
