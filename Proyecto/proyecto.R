@@ -1,17 +1,20 @@
 library(ggplot2)
 #Declaración del dataframe con las partículas iniciales
-l<-3
+l<-1.5
 velocidad<-l/60
-n <- 80 #Número de particulas 
-particulas<- data.frame(x = double(), y = double(), dx = double(), dy = double(), espesor=double(), estado=character(), lider=numeric())
+n <- 10 #Número de particulas 
+particulas<- data.frame(posicion=numeric(),x = double(), y = double(), dx = double(), dy = double(), espesor=double(), estado=character(), lider=numeric())
 for(i in 1:n){
 particulas <-rbind(particulas, data.frame(x = runif(1, 0, l), y=runif(1, 0, l), c =-5, r=5, dx=runif(1,-velocidad,velocidad), dy=runif(1,-velocidad,velocidad), espesor=runif(1,0.01,0.1),estado="S",lider=0))
 }
+particulas$posicion<-seq(1,n,1)
+particulas$lider<-seq(1,n,1)
 levels(particulas$estado) <- c(levels(particulas$estado), "A","L")
 particulas$rf<-particulas$r+particulas$espesor
 matriz<-matrix(double(),nrow=n,ncol=n)
+
 #Movimiento Browniano
-tmax<-50
+tmax<-60 #duración de la simulación
 for (tiempo in 1:tmax){
   for(i in 1:n){
     p<-particulas[i,]
@@ -34,10 +37,7 @@ for (tiempo in 1:tmax){
     particulas[i,]<-p
   }
   
-umbral<-0.06
-
-
-#Calcular distancia euclidiana
+umbral<-0.05
 
  for (i in 1:n){
    p1<- particulas[i,]
@@ -47,21 +47,25 @@ umbral<-0.06
        dx<-p1$x-p2$x
        dy<-p1$y-p2$y
        if(i!=j){
-         matriz[i,j]<-sqrt(dx^2+dy^2)
+         matriz[i,j]<-sqrt(dx^2+dy^2) #Calcular distancia euclidiana
          d<-matriz[i,j]
          if (d<umbral)
          {
-           particulas[j,]$estado<-"L"
+          
            particulas[i,]$estado<-"A"
            particulas[i,]$dx<-particulas[j,]$dx
            particulas[i,]$dy<-particulas[j,]$dy
+           particulas[i,]$lider<-particulas[j,]$lider
+           if (particulas[i,]$posicion==particulas[i,]$lider & particulas[i,]$estado=="A"){
+           particulas[i,]$estado<-"L"} else {particulas[i,]$estado<-particulas[i,]$estado}
          }
        }
      }
    }   
  }
 #Determinar la densidad de la doble capa
-
+#Fax<-
+#Fay<-
 #FuerzaAtracción->function(){}#Calcular fuerzas de atracción de van der waals 
 #Función inversa de la distancia pero elevada a un exponente mayor de dos
 
@@ -76,8 +80,8 @@ umbral<-0.06
 ggplot() +
   geom_point(data=particulas, aes(x = particulas$x, y= particulas$y,size=particulas$rf), color="gray80")+
   geom_point(data=particulas, aes(x = particulas$x, y= particulas$y),color="gray29")+
-  scale_x_continuous(name="x",limits = c(0, 3))+
-  scale_y_continuous(name="y",limits = c(0, 3))+
+  scale_x_continuous(name="x",limits = c(0, l))+
+  scale_y_continuous(name="y",limits = c(0, l))+
   scale_colour_manual(values=colores)+  
   ggtitle(paste("Paso",tiempo))+
   theme(plot.title = element_text(hjust = 0.5, size = 15))+
@@ -98,3 +102,7 @@ ggplot() +
 ggsave(paste("Proyecto_p_",tiempo,".png"))
 }
 
+#library(magick)
+#frames=lapply(1:tmax,function(x) image_read(paste("Proyecto_p_",x,".png")))
+#animation <- image_animate(image_join(frames), fps=100)
+#image_write(animation, paste("Proyecto", ".gif"))
