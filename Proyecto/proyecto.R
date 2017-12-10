@@ -5,7 +5,7 @@ velocidad<-l/60
 n <- 30 #Número de particulas 
 particulas<- data.frame(posicion=numeric(),x = double(), y = double(), dx = double(), dy = double(), espesor=double(), estado=character(), lider=numeric())
 for(i in 1:n){
-particulas <-rbind(particulas, data.frame(x = runif(1, 0, l), y=runif(1, 0, l), c =-5, r=5, dx=runif(1,-velocidad,velocidad), dy=runif(1,-velocidad,velocidad), espesor=runif(1,0.01,0.1),estado="S",lider=0))
+particulas <-rbind(particulas, data.frame(x = runif(1, 0, l), y=runif(1, 0, l), c =runif(1, 5, 5.1), r=5, dx=runif(1,-velocidad,velocidad), dy=runif(1,-velocidad,velocidad), espesor=runif(1,0.01,0.1),estado="S",lider=0))
 }
 particulas$posicion<-seq(1,n,1)
 particulas$lider<-seq(1,n,1)
@@ -13,7 +13,7 @@ levels(particulas$estado) <- c(levels(particulas$estado), "A","L")
 particulas$rf<-particulas$r+particulas$espesor
 matriz<-matrix(double(),nrow=n,ncol=n)
 umbral<-0.03 #Distancia de umbral de interacción
-dcc<-0.05 # Espesor de la doble capa electrica de interacción
+dcc<-0.06 # Espesor de la doble capa electrica de interacción
 
 #Movimiento Browniano
 tmax<-40 #duración de la simulación
@@ -59,7 +59,7 @@ for (tiempo in 1:tmax){
          d<-matriz[i,j]
          if (d<umbral) 
          {
-           if (particulas[i,]$espesor<dcc & particulas[j,]$espesor<dcc){ #uniion
+           if (particulas[i,]$espesor<dcc && particulas[j,]$espesor<dcc){ #uniion
              
              if (particulas[j,]$estado=="L"){
             
@@ -80,10 +80,12 @@ for (tiempo in 1:tmax){
            }
            
           else if (particulas[i,]$espesor>dcc || particulas[j,]$espesor>dcc){ #repelen
-            particulas[i,]$dx<--particulas[i,]$dx
-            particulas[i,]$dy<--particulas[i,]$dy
-            particulas[j,]$dx<--particulas[j,]$dx
-            particulas[j,]$dy<--particulas[j,]$dy
+            print(particulas[i,]$dx)
+            particulas[i,]$dx=particulas[i,]$dx*(-particulas[i,]$dx)
+            particulas[i,]$dy=particulas[i,]$dy*(-particulas[i,]$dy)
+            particulas[j,]$dx=particulas[j,]$dx*(-particulas[j,]$dx)
+            particulas[j,]$dy=particulas[j,]$dy*(-particulas[j,]$dy)
+            print(particulas[i,]$dx)
             print("repelen")
            }
          }
@@ -97,11 +99,16 @@ for (tiempo in 1:tmax){
 
 #FuerzaAtracción->function(){}#Calcular fuerzas de atracción de van der waals 
 #Función inversa de la distancia pero elevada a un exponente mayor de dos
-
+  #A=0.1*10^-20 #constante de Hamaker
+  #Va=(-(A*(particulas[i,]$rf/(6*d))))
+  #Va=(particulas[i,]$c*particulas[j,]$c)/d^6
+  
 #FuerzaRepulsión->function(){}#Calcular fuerzas de repulsión electrostatica
 #Fuerza de repulsión es inversamente proporcional al cuadrado de la distancia 
-
-
+  #Vr=(particulas[i,]$c*particulas[j,]$c)/d^2
+#Fuerza de DLVO
+    
+   # Vt=Va-Vr
 
 
   
@@ -132,8 +139,33 @@ ggplot()+
   )
 ggsave(paste("Proyecto_p_",tiempo,".png"))
 }
+#Datos simulados
 
 
+
+#Datos experimentales Tamaños vs pH
+
+library(lattice)
+
+testcsv<- read.csv(file="datos.csv", head=TRUE, sep = ",")
+testcsv
+
+names(testcsv)=c("Tiempo","Tamaño","pH")
+testcsv$pH=as.factor(testcsv$pH)
+xyplot(data=testcsv,Tamaño~Tiempo,groups = pH, xlab="Tiempo (s)", ylab="Tamaño (nm)",
+       key=list(space="right",
+                lines=list(col=c("deepskyblue2","hotpink1","green4","red"), lty=c(1,1), lwd=2),
+                text=list(c("pH 1","pH 5","pH 6","pH 7"))
+       ),
+       panel=function(x,y,subscripts,groups){
+         panel.grid(h=-1,v=-1)
+         panel.xyplot(x,y)
+         panel.stripplot(x,y,
+                         groups = groups, subscripts = subscripts,pch=19,type="o")
+         #panel.abline(h=wolfram,col="Green",lwd=2)
+       })
+
+#Crear imagen gif
 
 #library(magick)
 #frames=lapply(1:tmax,function(x) image_read(paste("Proyecto_p_",x,".png")))
