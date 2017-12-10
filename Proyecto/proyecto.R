@@ -2,7 +2,7 @@ library(ggplot2)
 #Declaración del dataframe con las partículas iniciales
 l<-1.5
 velocidad<-l/60
-n <- 40 #Número de particulas 
+n <- 30 #Número de particulas 
 particulas<- data.frame(posicion=numeric(),x = double(), y = double(), dx = double(), dy = double(), espesor=double(), estado=character(), lider=numeric())
 for(i in 1:n){
 particulas <-rbind(particulas, data.frame(x = runif(1, 0, l), y=runif(1, 0, l), c =-5, r=5, dx=runif(1,-velocidad,velocidad), dy=runif(1,-velocidad,velocidad), espesor=runif(1,0.01,0.1),estado="S",lider=0))
@@ -12,9 +12,12 @@ particulas$lider<-seq(1,n,1)
 levels(particulas$estado) <- c(levels(particulas$estado), "A","L")
 particulas$rf<-particulas$r+particulas$espesor
 matriz<-matrix(double(),nrow=n,ncol=n)
+umbral<-0.03 #Distancia de umbral de interacción
+dcc<-0.05 # Espesor de la doble capa electrica de interacción
 
 #Movimiento Browniano
-tmax<-30 #duración de la simulación
+tmax<-40 #duración de la simulación
+
 
 for (tiempo in 1:tmax){
   
@@ -38,12 +41,12 @@ for (tiempo in 1:tmax){
       p$y <- p$y + l
     }
     particulas[i,]<-p
-  }
+    }
   
-umbral<-0.03
-dcc<-0.05
+
 
  for (i in 1:n){
+   
    p1<- particulas[i,]
    if (p1$estado != "A"){
      for (j in 1:n){
@@ -54,9 +57,9 @@ dcc<-0.05
        if(i!=j){
          matriz[i,j]<-sqrt(dx^2+dy^2) #Calcular distancia euclidiana
          d<-matriz[i,j]
-         if (d<umbral)
+         if (d<umbral) 
          {
-           if (particulas[i,]$espesor<dcc & particulas[j,]$espesor<dcc){
+           if (particulas[i,]$espesor<dcc & particulas[j,]$espesor<dcc){ #uniion
              
              if (particulas[j,]$estado=="L"){
             
@@ -73,22 +76,25 @@ dcc<-0.05
                particulas[j,]$lider<-particulas[i,]$lider
                particulas[i,]$estado<-"L"
              }
+             print("aglomerado")
            }
-           else{
-             
-            
-                      }
+           
+          else if (particulas[i,]$espesor>dcc || particulas[j,]$espesor>dcc){ #repelen
+            particulas[i,]$dx<--particulas[i,]$dx
+            particulas[i,]$dy<--particulas[i,]$dy
+            particulas[j,]$dx<--particulas[j,]$dx
+            particulas[j,]$dy<--particulas[j,]$dy
+            print("repelen")
+           }
          }
-        }
        }
-     }
-   }   
- }
+      }
+    }
+  }
+}  
 
 
-#Determinar la densidad de la doble capa
-#Fax<-
-#Fay<-
+
 #FuerzaAtracción->function(){}#Calcular fuerzas de atracción de van der waals 
 #Función inversa de la distancia pero elevada a un exponente mayor de dos
 
@@ -96,7 +102,7 @@ dcc<-0.05
 #Fuerza de repulsión es inversamente proporcional al cuadrado de la distancia 
 
 
-#Establecer una distancia de umbral de interacción
+
 
   
 #Graficar la simulación
@@ -126,6 +132,8 @@ ggplot()+
   )
 ggsave(paste("Proyecto_p_",tiempo,".png"))
 }
+
+
 
 #library(magick)
 #frames=lapply(1:tmax,function(x) image_read(paste("Proyecto_p_",x,".png")))
