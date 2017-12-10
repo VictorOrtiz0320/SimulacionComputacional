@@ -2,7 +2,7 @@ library(ggplot2)
 #Declaración del dataframe con las partículas iniciales
 l<-1.5
 velocidad<-l/60
-n <- 10 #Número de particulas 
+n <- 40 #Número de particulas 
 particulas<- data.frame(posicion=numeric(),x = double(), y = double(), dx = double(), dy = double(), espesor=double(), estado=character(), lider=numeric())
 for(i in 1:n){
 particulas <-rbind(particulas, data.frame(x = runif(1, 0, l), y=runif(1, 0, l), c =-5, r=5, dx=runif(1,-velocidad,velocidad), dy=runif(1,-velocidad,velocidad), espesor=runif(1,0.01,0.1),estado="S",lider=0))
@@ -14,8 +14,11 @@ particulas$rf<-particulas$r+particulas$espesor
 matriz<-matrix(double(),nrow=n,ncol=n)
 
 #Movimiento Browniano
-tmax<-60 #duración de la simulación
+tmax<-30 #duración de la simulación
+
 for (tiempo in 1:tmax){
+  
+  
   for(i in 1:n){
     p<-particulas[i,]
     
@@ -37,13 +40,15 @@ for (tiempo in 1:tmax){
     particulas[i,]<-p
   }
   
-umbral<-0.05
+umbral<-0.03
+dcc<-0.05
 
  for (i in 1:n){
    p1<- particulas[i,]
    if (p1$estado != "A"){
      for (j in 1:n){
        p2<-particulas[j,]
+       if (p2$estado != "A"){
        dx<-p1$x-p2$x
        dy<-p1$y-p2$y
        if(i!=j){
@@ -51,18 +56,36 @@ umbral<-0.05
          d<-matriz[i,j]
          if (d<umbral)
          {
-          
-           particulas[i,]$estado<-"A"
-           particulas[i,]$dx<-particulas[j,]$dx
-           particulas[i,]$dy<-particulas[j,]$dy
-           particulas[i,]$lider<-particulas[j,]$lider
-           if (particulas[i,]$posicion==particulas[i,]$lider & particulas[i,]$estado=="A"){
-           particulas[i,]$estado<-"L"} else {particulas[i,]$estado<-particulas[i,]$estado}
+           if (particulas[i,]$espesor<dcc & particulas[j,]$espesor<dcc){
+             
+             if (particulas[j,]$estado=="L"){
+            
+             particulas[i,]$estado<-"A"
+             particulas[i,]$dx<-particulas[j,]$dx
+             particulas[i,]$dy<-particulas[j,]$dy
+             particulas[i,]$lider<-particulas[j,]$lider
+             particulas[j,]$estado<-"L"
+             }
+             else{
+               particulas[j,]$estado<-"A"
+               particulas[j,]$dx<-particulas[i,]$dx
+               particulas[j,]$dy<-particulas[i,]$dy
+               particulas[j,]$lider<-particulas[i,]$lider
+               particulas[i,]$estado<-"L"
+             }
+           }
+           else{
+             
+            
+                      }
          }
+        }
        }
      }
    }   
  }
+
+
 #Determinar la densidad de la doble capa
 #Fax<-
 #Fay<-
@@ -77,9 +100,11 @@ umbral<-0.05
 
   
 #Graficar la simulación
-ggplot() +
+ggplot()+
+#ggplot(data=particulas, aes(x = particulas$x, y= particulas$y, label=rownames(particulas))) +
   geom_point(data=particulas, aes(x = particulas$x, y= particulas$y,size=particulas$rf), color="gray80")+
   geom_point(data=particulas, aes(x = particulas$x, y= particulas$y),color="gray29")+
+  #geom_label(aes(fill = factor(particulas$lider)), colour = "white", fontface = "bold")+
   scale_x_continuous(name="x",limits = c(0, l))+
   scale_y_continuous(name="y",limits = c(0, l))+
   scale_colour_manual(values=colores)+  
