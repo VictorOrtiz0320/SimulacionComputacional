@@ -1,8 +1,9 @@
 library(ggplot2)
 #Declaración del dataframe con las partículas iniciales
 l<-3
-velocidad<-l/60
+velocidad<-l/30
 tabla=data.frame()
+datos=data.frame()
 n <- 20 #Número de particulas 
 particulas<- data.frame(posicion=numeric(),x = double(), y = double(), dx = double(), dy = double(), espesor=double(), estado=character(), lider=numeric())
 for(i in 1:n){
@@ -14,10 +15,10 @@ levels(particulas$estado) <- c(levels(particulas$estado), "A","L")
 particulas$rf<-particulas$r+particulas$espesor
 matriz<-matrix(double(),nrow=n,ncol=n)
 umbral<-0.02 #Distancia de umbral de interacción
-dcc<-0.05 # Espesor de la doble capa electrica de interacción
+dcc<-0.8 # Espesor de la doble capa electrica de interacción
 
 
-tmax<-80 #duración de la simulación
+tmax<-70 #duración de la simulación
 
 
 for (tiempo in 1:tmax){
@@ -60,16 +61,17 @@ for (tiempo in 1:tmax){
              print("aglomerado")
            }
            
-          else if (particulas[i,]$espesor>dcc | particulas[j,]$espesor>dcc){ #repelen
+          else{ #if (particulas[i,]$espesor>dcc | particulas[j,]$espesor>dcc){ #repelen
+            if(particulas[i,]$estado=="L" | particulas[i,]$estado!="L"){
             print(particulas[i,]$dx)
-            particulas[i,]$dx<-particulas[i,]$dx*-1
-            particulas[i,]$dy<-particulas[i,]$dy*-1
-            particulas[j,]$dx<-particulas[j,]$dx*-1
-            particulas[j,]$dy<-particulas[j,]$dy*-1
+            particulas[i,]$dx<-(particulas[i,]$dx*-1)
+            particulas[i,]$dy<-(particulas[i,]$dy*-1)
+            particulas[j,]$dx<-(particulas[j,]$dx*-1)
+            particulas[j,]$dy<-(particulas[j,]$dy*-1)
             print(paste("pos inicial particula",i,j, tiempo))
             print("repelen")
             print(particulas[i,]$dx)
-          
+            }
           }
          
          }
@@ -124,7 +126,7 @@ tabla=rbind(tabla,particulas)
 #Graficar la simulación
 
 #ggplot()+
-ggplot(data=particulas, aes(x = particulas$x, y= particulas$y, label=rownames(particulas))) +
+ggplot(data=particulas, aes(x = particulas$x, y= particulas$y, label=particulas$estado)) +
   geom_point(data=particulas, aes(x = particulas$x, y= particulas$y,size=particulas$rf), color="gray80")+
   geom_point(data=particulas, aes(x = particulas$x, y= particulas$y),color="gray29")+
   geom_label(aes(fill = factor(particulas$lider)), colour = "white", fontface = "bold")+
@@ -148,7 +150,25 @@ ggplot(data=particulas, aes(x = particulas$x, y= particulas$y, label=rownames(pa
     panel.grid.minor = element_line(linetype = "dotted")
   )
 ggsave(paste("Proyecto_p_",tiempo,".png"))
+
+
+for (i in 1:n){
+  res<-cbind(tiempo,i,dim( particulas[particulas$lider==i,])[1])
+  datos<-rbind(datos,res)
+  
 }
+
+}
+colnames(datos)<-c("Tiempo","Lider","Tamaño")
+datos$Tiempo=as.factor(datos$Tiempo)
+ggplot(data=datos,aes(x=Tiempo,y=Tamaño))+
+  geom_point()
+datos<-datos[datos$Tamaño!=0,]
+#Histograma
+ggplot(data=datos, aes(datos$Tamaño)) + 
+  geom_histogram(bins = 10)
+
+
 #Datos simulados
 
 
@@ -162,6 +182,7 @@ testcsv
 
 names(testcsv)=c("Tiempo","Tamaño","pH")
 testcsv$pH=as.factor(testcsv$pH)
+png("DatosE.png",width=600, height=600,pointsize = 35)
 xyplot(data=testcsv,Tamaño~Tiempo,groups = pH, xlab="Tiempo (s)", ylab="Tamaño (nm)",
        key=list(space="right",
                 lines=list(col=c("deepskyblue2","hotpink1","green4","red"), lty=c(1,1), lwd=2),
@@ -174,6 +195,30 @@ xyplot(data=testcsv,Tamaño~Tiempo,groups = pH, xlab="Tiempo (s)", ylab="Tamaño (
                          groups = groups, subscripts = subscripts,pch=19,type="o")
          #panel.abline(h=wolfram,col="Green",lwd=2)
        })
+graphics.off()
+ggplot(data=datos, aes(datos$Tamaño)) + 
+  geom_histogram(bins = 6, color="white", fill="black")
+
+ggplot(data=testcsv, aes(testcsv$Tamaño, fill=factor(testcsv$pH))) + 
+  geom_histogram(bins = 6, color="white")+
+  facet_grid(pH~.)
+
+epsi<-6.9505
+R<-8.3145
+T<-298.15
+F<-96480
+for(pH in c(1,5,6,7)){
+  Xd<-(((epsi*R*T*pH)/(4*F^2))^0.5)*1000
+  Xd
+print(Xd)
+}
+
+
+
+
+
+
+
 
 #Crear imagen gif
 
